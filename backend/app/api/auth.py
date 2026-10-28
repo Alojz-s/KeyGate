@@ -1,4 +1,3 @@
-import secrets
 from datetime import UTC, datetime
 from typing import Annotated
 
@@ -25,14 +24,15 @@ from app.schemas.auth import (
     PasswordPolicyResponse,
     PolicyViolation,
 )
+from app.services.one_time_passwords import (
+    try_login_with_one_time_password,
+    verify_used_one_time_password,
+)
 from app.services.password_policy import MAX_PASSWORD_LENGTH, describe_policy, validate_password
-from app.services.passwords import hash_password, verify_password
+from app.services.passwords import DUMMY_PASSWORD_HASH, hash_password, verify_password
 from app.services.sessions import create_session, delete_session
 
 LOGIN_FAILED = "Login lub hasło niepoprawne"
-
-# Weryfikowany, gdy konto nie istnieje lub nie ma hasła - czas odpowiedzi nie zdradza loginu.
-_DUMMY_PASSWORD_HASH = hash_password(secrets.token_urlsafe(32))
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -54,9 +54,12 @@ def login(
     body: LoginRequest, response: Response, db: Annotated[Session, Depends(get_db)]
 ) -> MeResponse:
     user = db.scalar(select(User).where(User.login == body.login))
-    password_hash = user.password_hash if user and user.password_hash else _DUMMY_PASSWORD_HASH
+    if user is not None and (user.is_blocked or user.deleted_at is not None):
+        user = None
+    password_hash = user.password_hash if user and user.password_hash else DUMMY_PASSWORD_HASH
     password_ok = verify_password(body.password, password_hash)
-    if user is None or not password_ok or user.is_blocked or user.deleted_at is not None:
+    otp_ok = not password_ok and try_login_with_one_time_password(db, user, body.password)
+    if user is None or not (password_ok or otp_ok):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, LOGIN_FAILED)
 
     if password_change_required(user, get_security_settings(db)):
@@ -96,7 +99,11 @@ def change_password(
         raise ApiError(
             status.HTTP_400_BAD_REQUEST, "Powtórzone hasło nie jest identyczne", "password_mismatch"
         )
-    if user.password_hash is None or not verify_password(body.old_password, user.password_hash):
+    if user.password_hash is None:
+        old_password_ok = verify_used_one_time_password(db, user.id, body.old_password)
+    else:
+        old_password_ok = verify_password(body.old_password, user.password_hash)
+    if not old_password_ok:
         raise ApiError(
             status.HTTP_400_BAD_REQUEST, "Obecne hasło jest niepoprawne", "invalid_old_password"
         )
@@ -110,7 +117,8 @@ def change_password(
         )
         return JSONResponse(error.model_dump(), status_code=status.HTTP_422_UNPROCESSABLE_CONTENT)
 
-    db.add(PasswordHistory(user_id=user.id, password_hash=user.password_hash))
+    if user.password_hash is not None:
+        db.add(PasswordHistory(user_id=user.id, password_hash=user.password_hash))
     user.password_hash = hash_password(body.new_password)
     user.password_changed_at = datetime.now(UTC)
     user.must_change_password = False
