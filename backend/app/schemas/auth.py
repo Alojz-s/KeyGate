@@ -15,6 +15,22 @@ class MeResponse(BaseModel):
     idle_timeout_minutes: int
 
 
+class ChangePasswordRequest(BaseModel):
+    old_password: str
+    new_password: str
+    new_password_confirm: str
+
+
+class PolicyViolation(BaseModel):
+    code: str
+    message: str
+
+
+class PasswordPolicyErrorResponse(BaseModel):
+    detail: str
+    violations: list[PolicyViolation]
+
+
 class PasswordPolicyResponse(BaseModel):
     min_password_length: int
     max_password_length: int

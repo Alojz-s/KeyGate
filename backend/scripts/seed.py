@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session  # noqa: E402
 
 from app.core.config import get_settings  # noqa: E402
 from app.core.database import SessionLocal  # noqa: E402
+from app.core.permissions import ROLE_PERMISSION_MATRIX  # noqa: E402
 from app.models import (  # noqa: E402
     SECURITY_SETTINGS_ID,
     Article,
@@ -28,13 +29,6 @@ from app.services.passwords import hash_password  # noqa: E402
 
 ADMIN_LOGIN = "ADMIN"
 MIN_SEED_PASSWORD_LENGTH = 15
-
-ROLE_PERMISSIONS = {
-    "Administrator": ["articles.read", "users.manage", "settings.manage"],
-    "Audytor": ["articles.read"],
-    "Redaktor": ["articles.read", "articles.write"],
-    "Czytelnik": ["articles.read"],
-}
 
 TEST_USERS = {
     "redaktor": "Redaktor",
@@ -72,7 +66,7 @@ def seed(db: Session, admin_password: str, user_password: str) -> None:
 
 
 def _ensure_permissions(db: Session) -> dict[str, Permission]:
-    names = sorted({name for names in ROLE_PERMISSIONS.values() for name in names})
+    names = sorted({name for names in ROLE_PERMISSION_MATRIX.values() for name in names})
     existing = {p.name: p for p in db.scalars(select(Permission).where(Permission.name.in_(names)))}
     for name in names:
         if name not in existing:
@@ -82,8 +76,10 @@ def _ensure_permissions(db: Session) -> dict[str, Permission]:
 
 
 def _ensure_roles(db: Session, permissions: dict[str, Permission]) -> dict[str, Role]:
-    existing = {r.name: r for r in db.scalars(select(Role).where(Role.name.in_(ROLE_PERMISSIONS)))}
-    for name, permission_names in ROLE_PERMISSIONS.items():
+    existing = {
+        r.name: r for r in db.scalars(select(Role).where(Role.name.in_(ROLE_PERMISSION_MATRIX)))
+    }
+    for name, permission_names in ROLE_PERMISSION_MATRIX.items():
         role = existing.get(name)
         if role is None:
             role = existing[name] = Role(name=name)

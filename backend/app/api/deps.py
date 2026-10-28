@@ -1,5 +1,5 @@
-from datetime import UTC, datetime
-from typing import Annotated
+from datetime import UTC, datetime, timedelta
+from typing import Annotated, Any
 
 from fastapi import Cookie, Depends, Request, status
 from fastapi.responses import JSONResponse
@@ -65,3 +65,46 @@ def get_current_user(
 
 
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+def password_change_required(user: User, settings: SecuritySettings) -> bool:
+    if user.must_change_password:
+        return True
+    if settings.password_validity_days == 0:
+        return False
+    # Brak daty zmiany przy włączonej ważności traktujemy jak hasło wygasłe.
+    if user.password_changed_at is None:
+        return True
+    validity = timedelta(days=settings.password_validity_days)
+    return user.password_changed_at + validity < datetime.now(UTC)
+
+
+def require_full_access(user: CurrentUser, db: Annotated[Session, Depends(get_db)]) -> User:
+    if password_change_required(user, get_security_settings(db)):
+        raise ApiError(
+            status.HTTP_403_FORBIDDEN, "Wymagana zmiana hasła", "password_change_required"
+        )
+    return user
+
+
+def require_permission(name: str) -> Any:
+    def dependency(user: Annotated[User, Depends(require_full_access)]) -> User:
+        if all(p.name != name for p in user.role.permissions):
+            raise ApiError(
+                status.HTTP_403_FORBIDDEN, "Brak uprawnień do wykonania tej operacji", "forbidden"
+            )
+        return user
+
+    return Depends(dependency)
+
+
+def reject_restricted_session(
+    db: Annotated[Session, Depends(get_db)],
+    token: Annotated[str | None, Cookie(alias=SESSION_COOKIE)] = None,
+) -> None:
+    """Dla endpointów publicznych: bez sesji dostępne, ale nie dla sesji z wymaganą zmianą hasła."""
+    try:
+        user = get_current_user(db, token)
+    except ApiError:
+        return
+    require_full_access(user, db)
