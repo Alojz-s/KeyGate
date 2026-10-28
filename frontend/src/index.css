@@ -1,0 +1,120 @@
+:root {
+  --bg: #f4f6fb;
+  --card-bg: #ffffff;
+  --text: #1c2333;
+  --muted: #5b6478;
+  --border: #dde2ec;
+  --accent: #2f5bea;
+  --ok-bg: #e3f6ea;
+  --ok-text: #1b7a3d;
+  --error-bg: #fde8e8;
+  --error-text: #b42318;
+  --pending-bg: #eef0f5;
+  --pending-text: #5b6478;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.home {
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.home h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  margin: 0.25rem 0 2rem;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+}
+
+.status-list {
+  list-style: none;
+  margin: 0 0 1.25rem;
+  padding: 0;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.status-row:last-child {
+  border-bottom: none;
+}
+
+.status-badge {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+}
+
+.status-badge--ok {
+  background: var(--ok-bg);
+  color: var(--ok-text);
+}
+
+.status-badge--error {
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.status-badge--pending {
+  background: var(--pending-bg);
+  color: var(--pending-text);
+}
+
+.error-message {
+  margin: 0 0 1rem;
+  color: var(--error-text);
+  font-size: 0.875rem;
+}
+
+button {
+  font: inherit;
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
