@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { fetchHealth, type HealthResponse } from '../api/health'
-import { useAuth } from '../auth/AuthContext'
 
 type State =
   | { kind: 'loading' }
@@ -19,7 +18,6 @@ function StatusBadge({ label, ok }: { label: string; ok: boolean | null }) {
 }
 
 export default function HomePage() {
-  const { user, logout } = useAuth()
   const [state, setState] = useState<State>({ kind: 'loading' })
   const [attempt, setAttempt] = useState(0)
 
@@ -53,31 +51,18 @@ export default function HomePage() {
   }
 
   return (
-    <main className="home">
-      <header className="user-bar">
-        <span>
-          Zalogowano jako <strong>{user?.login}</strong> ({user?.role})
-        </span>
-        <button type="button" onClick={() => logout()}>
-          Wyloguj
-        </button>
-      </header>
-      <h1>KeyGate</h1>
-      <p className="subtitle">Firmowy portal z artykułami</p>
-
-      <section className="card" aria-labelledby="status-heading">
-        <h2 id="status-heading">Status systemu</h2>
-        <ul className="status-list">
-          <StatusBadge label="Backend" ok={backendOk} />
-          <StatusBadge label="Baza danych" ok={databaseOk} />
-        </ul>
-        {state.kind === 'unreachable' && (
-          <p className="error-message">Brak połączenia z backendem ({state.message}).</p>
-        )}
-        <button type="button" onClick={refresh} disabled={state.kind === 'loading'}>
-          Odśwież
-        </button>
-      </section>
-    </main>
+    <section className="card" aria-labelledby="status-heading">
+      <h2 id="status-heading">Status systemu</h2>
+      <ul className="status-list">
+        <StatusBadge label="Backend" ok={backendOk} />
+        <StatusBadge label="Baza danych" ok={databaseOk} />
+      </ul>
+      {state.kind === 'unreachable' && (
+        <p className="error-message">Brak połączenia z backendem ({state.message}).</p>
+      )}
+      <button type="button" onClick={refresh} disabled={state.kind === 'loading'}>
+        Odśwież
+      </button>
+    </section>
   )
 }
