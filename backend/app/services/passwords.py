@@ -1,3 +1,5 @@
+import secrets
+
 from argon2 import PasswordHasher, Type
 from argon2.exceptions import InvalidHashError, VerificationError
 
@@ -7,6 +9,10 @@ _hasher = PasswordHasher(time_cost=3, memory_cost=64 * 1024, parallelism=4, type
 
 def hash_password(plain: str) -> str:
     return _hasher.hash(plain)
+
+
+# Weryfikowany, gdy nie ma prawdziwego hasha - czas odpowiedzi nie zdradza, czego brakowało.
+DUMMY_PASSWORD_HASH = hash_password(secrets.token_urlsafe(32))
 
 
 def verify_password(plain: str, password_hash: str) -> bool:
