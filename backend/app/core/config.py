@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT_DIR = Path(__file__).resolve().parents[3]
@@ -18,6 +19,10 @@ class Settings(BaseSettings):
     debug: bool = False
     database_url: str
     database_connect_timeout: int = 3
+
+    # Wymagane tylko przez scripts/seed.py.
+    admin_initial_password: SecretStr | None = None
+    seed_user_password: SecretStr | None = None
 
 
 @lru_cache
