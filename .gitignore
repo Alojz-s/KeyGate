@@ -14,8 +14,8 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
 parts/
 sdist/
 var/
@@ -218,3 +218,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- KeyGate ---
+# Python / venv
+.venv/
+# Sekrety (wzorzec .env.example pozostaje w repo)
+.env
+.env.*
+!.env.example
+# Frontend (Node / Vite)
+node_modules/
+dist/
+*.tsbuildinfo
