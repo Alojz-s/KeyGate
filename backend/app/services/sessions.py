@@ -31,5 +31,9 @@ def delete_session(db: Session, token: str) -> None:
     db.execute(delete(UserSession).where(UserSession.token_hash == _hash_token(token)))
 
 
+def delete_all_sessions_for_user(db: Session, user_id: int) -> None:
+    db.execute(delete(UserSession).where(UserSession.user_id == user_id))
+
+
 def is_idle_expired(session: UserSession, idle_timeout_minutes: int, now: datetime) -> bool:
     return now - session.last_activity_at > timedelta(minutes=idle_timeout_minutes)
