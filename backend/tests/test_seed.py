@@ -6,9 +6,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.database import Base
+from app.core.permissions import ROLE_PERMISSION_MATRIX
 from app.models import Article, Permission, Role, SecuritySettings, User
 from app.services.passwords import verify_password
-from scripts.seed import ADMIN_LOGIN, ROLE_PERMISSIONS, seed
+from scripts.seed import ADMIN_LOGIN, seed
 
 pytestmark = pytest.mark.db
 
@@ -39,7 +40,7 @@ def test_seed_assigns_permissions_from_matrix(db_session: Session) -> None:
     seed(db_session, ADMIN_PASSWORD, USER_PASSWORD)
 
     for role in db_session.scalars(select(Role)):
-        assert {p.name for p in role.permissions} == set(ROLE_PERMISSIONS[role.name])
+        assert {p.name for p in role.permissions} == set(ROLE_PERMISSION_MATRIX[role.name])
 
 
 def test_seed_users(db_session: Session) -> None:
