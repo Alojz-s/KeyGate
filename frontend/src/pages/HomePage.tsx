@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchHealth, type HealthResponse } from '../api/health'
+import { useAuth } from '../auth/AuthContext'
 
 type State =
   | { kind: 'loading' }
@@ -18,6 +19,7 @@ function StatusBadge({ label, ok }: { label: string; ok: boolean | null }) {
 }
 
 export default function HomePage() {
+  const { user, logout } = useAuth()
   const [state, setState] = useState<State>({ kind: 'loading' })
   const [attempt, setAttempt] = useState(0)
 
@@ -52,6 +54,14 @@ export default function HomePage() {
 
   return (
     <main className="home">
+      <header className="user-bar">
+        <span>
+          Zalogowano jako <strong>{user?.login}</strong> ({user?.role})
+        </span>
+        <button type="button" onClick={() => logout()}>
+          Wyloguj
+        </button>
+      </header>
       <h1>KeyGate</h1>
       <p className="subtitle">Firmowy portal z artykułami</p>
 
