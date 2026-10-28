@@ -33,6 +33,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     await apiLogout().catch(() => undefined)
   }, [])
 
+  const refreshUser = useCallback(async () => {
+    setUser(await fetchMe())
+  }, [])
+
   // Tylko licznik po stronie klienta - bez odpytywania API w tle.
   useEffect(() => {
     if (!user) return
@@ -51,8 +55,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, logout])
 
   const value = useMemo(
-    () => ({ user, loading, notice, login, logout }),
-    [user, loading, notice, login, logout],
+    () => ({ user, loading, notice, login, logout, refreshUser }),
+    [user, loading, notice, login, logout, refreshUser],
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
