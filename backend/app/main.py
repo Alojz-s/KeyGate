@@ -1,6 +1,7 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 
-from app.api.deps import ApiError, api_error_handler
+from app.api.deps import ApiError, api_error_handler, validation_error_handler
 from app.api.router import api_router
 from app.core.config import get_settings
 
@@ -13,4 +14,5 @@ app = FastAPI(
     openapi_url="/api/openapi.json",
 )
 app.add_exception_handler(ApiError, api_error_handler)
+app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.include_router(api_router)

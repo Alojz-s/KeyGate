@@ -63,5 +63,9 @@ export async function resetPassword(id: number): Promise<string> {
 }
 
 export function fetchSecuritySettings(): Promise<SecuritySettings> {
-  return apiRequest<SecuritySettings>('GET', '/admin/settings/security')
+  return apiRequest<SecuritySettings>('GET', '/admin/settings')
+}
+
+export function updateSecuritySettings(settings: SecuritySettings): Promise<SecuritySettings> {
+  return apiRequest<SecuritySettings>('PUT', '/admin/settings', settings)
 }

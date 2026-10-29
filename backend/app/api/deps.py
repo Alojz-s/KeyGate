@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Annotated, Any
 
 from fastapi import Cookie, Depends, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
@@ -24,6 +25,15 @@ class ApiError(Exception):
 def api_error_handler(_request: Request, exc: ApiError) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code, content={"detail": exc.detail, "code": exc.code}
+    )
+
+
+def validation_error_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Błędy walidacji wejścia w formacie 422 z kontraktu: {"detail": ..., "violations": [...]}."""
+    violations = [{"code": error["type"], "message": error["msg"]} for error in exc.errors()]
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content={"detail": "Nieprawidłowe dane w żądaniu", "violations": violations},
     )
 
 

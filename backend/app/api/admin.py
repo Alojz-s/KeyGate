@@ -14,6 +14,7 @@ from app.schemas.admin import (
     OneTimePasswordResponse,
     RoleItem,
     SecuritySettingsResponse,
+    SecuritySettingsUpdate,
     UserCreate,
     UserListItem,
     UserUpdate,
@@ -136,12 +137,18 @@ def reset_password(
     return OneTimePasswordResponse(one_time_password=one_time_password)
 
 
-@router.get("/settings/security", dependencies=[require_permission(SETTINGS_MANAGE)])
-def security_settings(db: Annotated[Session, Depends(get_db)]) -> SecuritySettingsResponse:
+@router.get("/settings", dependencies=[require_permission(SETTINGS_MANAGE)])
+def read_security_settings(db: Annotated[Session, Depends(get_db)]) -> SecuritySettingsResponse:
+    return SecuritySettingsResponse.model_validate(get_security_settings(db))
+
+
+@router.put("/settings", dependencies=[require_permission(SETTINGS_MANAGE)])
+def update_security_settings(
+    body: SecuritySettingsUpdate, db: Annotated[Session, Depends(get_db)]
+) -> SecuritySettingsResponse:
+    # Zmiana działa od razu, także na otwarte sesje: każde żądanie czyta ustawienia z bazy.
     settings = get_security_settings(db)
-    return SecuritySettingsResponse(
-        min_password_length=settings.min_password_length,
-        date_rule_enabled=settings.date_rule_enabled,
-        password_validity_days=settings.password_validity_days,
-        idle_timeout_minutes=settings.idle_timeout_minutes,
-    )
+    for field, value in body.model_dump().items():
+        setattr(settings, field, value)
+    db.commit()
+    return SecuritySettingsResponse.model_validate(settings)
