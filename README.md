@@ -19,7 +19,6 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-W drugim terminalu:
 
 ```bash
 cd frontend
