@@ -6,6 +6,10 @@ class ArticleCreate(BaseModel):
     content: str = Field(min_length=1)
 
 
+class ArticleUpdate(ArticleCreate):
+    pass
+
+
 class ArticleResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
