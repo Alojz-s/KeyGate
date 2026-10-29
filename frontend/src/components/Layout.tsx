@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
 import { hasPermission } from '../auth/permissions'
+import Brand from './Brand'
 
 export default function Layout() {
   const { user, logout } = useAuth()
@@ -11,7 +12,7 @@ export default function Layout() {
         <span>
           Zalogowano jako <strong>{user?.login}</strong> ({user?.role})
         </span>
-        <button type="button" onClick={() => logout()}>
+        <button type="button" className="button-small button-secondary" onClick={() => logout()}>
           Wyloguj
         </button>
       </header>
@@ -35,8 +36,7 @@ export default function Layout() {
           <NavLink to="/change-password">Zmiana hasła</NavLink>
         </nav>
       )}
-      <h1>KeyGate</h1>
-      <p className="subtitle">Firmowy portal z artykułami</p>
+      <Brand />
       <Outlet />
     </main>
   )
