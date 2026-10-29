@@ -18,6 +18,7 @@ from app.core.config import get_settings  # noqa: E402
 from app.core.database import SessionLocal  # noqa: E402
 from app.core.permissions import ROLE_PERMISSION_MATRIX  # noqa: E402
 from app.models import (  # noqa: E402
+    ADMIN_LOGIN,
     SECURITY_SETTINGS_ID,
     Article,
     Permission,
@@ -27,7 +28,6 @@ from app.models import (  # noqa: E402
 )
 from app.services.passwords import hash_password  # noqa: E402
 
-ADMIN_LOGIN = "ADMIN"
 MIN_SEED_PASSWORD_LENGTH = 15
 
 TEST_USERS = {
