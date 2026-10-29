@@ -1,16 +1,21 @@
 :root {
-  --bg: #f4f6fb;
+  --bg: #f6f3fc;
   --card-bg: #ffffff;
-  --text: #1c2333;
-  --muted: #5b6478;
-  --border: #dde2ec;
-  --accent: #2f5bea;
+  --text: #1f1733;
+  --muted: #6b6382;
+  --border: #e4ddf1;
+  --accent: #6d28d9;
+  --accent-hover: #5b21b6;
+  --accent-soft: #f1eafd;
+  --accent-strong: #4c1d95;
+  --focus-ring: rgba(109, 40, 217, 0.22);
   --ok-bg: #e3f6ea;
   --ok-text: #1b7a3d;
   --error-bg: #fde8e8;
   --error-text: #b42318;
-  --pending-bg: #eef0f5;
-  --pending-text: #5b6478;
+  --error-hover: #912018;
+  --pending-bg: #f0ecf7;
+  --pending-text: #6b6382;
 
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.5;
@@ -30,20 +35,26 @@ body {
 }
 
 .home {
-  max-width: 32rem;
+  max-width: 40rem;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 3rem 1.5rem 4rem;
 }
 
-.home h1 {
-  margin: 0;
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3em;
+  margin: 0 0 1.5rem;
   font-size: 2.5rem;
   letter-spacing: -0.02em;
+  color: var(--accent);
 }
 
-.subtitle {
-  margin: 0.25rem 0 2rem;
-  color: var(--muted);
+/* Wysokość wielkiej litery w Segoe UI (≈ 0,72 em); dolna krawędź SVG leży na linii bazowej. */
+.brand-logo {
+  height: 0.72em;
+  width: 1.44em;
+  flex-shrink: 0;
 }
 
 .card {
@@ -51,11 +62,18 @@ body {
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   padding: 1.5rem;
+  box-shadow:
+    0 1px 2px rgba(31, 23, 51, 0.04),
+    0 6px 20px rgba(76, 29, 149, 0.06);
 }
 
 .card h2 {
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
   font-size: 1.125rem;
+}
+
+.card + .card {
+  margin-top: 1.25rem;
 }
 
 .status-list {
@@ -77,7 +95,7 @@ body {
 }
 
 .status-badge {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   padding: 0.15rem 0.65rem;
   border-radius: 999px;
@@ -106,9 +124,11 @@ body {
 
 .notice {
   margin: 0 0 1rem;
-  padding: 0.6rem 0.8rem;
+  padding: 0.65rem 0.85rem;
+  border-left: 3px solid var(--accent);
   border-radius: 0.5rem;
-  background: var(--pending-bg);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
   font-size: 0.875rem;
 }
 
@@ -116,6 +136,7 @@ body {
   display: block;
   margin-bottom: 1rem;
   font-size: 0.875rem;
+  font-weight: 500;
   color: var(--muted);
 }
 
@@ -124,12 +145,30 @@ body {
 .login-form select {
   display: block;
   width: 100%;
-  margin-top: 0.25rem;
-  padding: 0.45rem 0.6rem;
+  margin-top: 0.3rem;
+  padding: 0.5rem 0.65rem;
   font: inherit;
+  font-weight: 400;
   color: var(--text);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.login-form textarea {
+  resize: vertical;
+}
+
+.login-form input:focus,
+.login-form textarea:focus,
+.login-form select:focus,
+.users-table select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .login-form .checkbox-label {
@@ -141,31 +180,76 @@ body {
 .login-form .checkbox-label input {
   width: auto;
   margin: 0;
+  accent-color: var(--accent);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .user-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
   font-size: 0.875rem;
   color: var(--muted);
-}
-
-.main-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin-bottom: 2rem;
-  font-size: 0.875rem;
 }
 
 .home a {
   color: var(--accent);
 }
 
+.home a:hover {
+  color: var(--accent-hover);
+}
+
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+  padding: 0.3rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.main-nav a {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  color: var(--muted);
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.main-nav a:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
 .main-nav a.active {
+  background: var(--accent);
+  color: #fff;
   font-weight: 600;
+}
+
+.article {
+  padding: 1.25rem 0;
+}
+
+.article:first-child {
+  padding-top: 0;
+}
+
+.article:last-child {
+  padding-bottom: 0;
 }
 
 .article + .article {
@@ -173,12 +257,17 @@ body {
 }
 
 .article h3 {
-  margin: 0.75rem 0 0.25rem;
+  margin: 0 0 0.35rem;
   font-size: 1rem;
 }
 
 .article p {
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.85rem;
+  white-space: pre-wrap;
+}
+
+.article p:last-child {
+  margin-bottom: 0;
 }
 
 .hint-list {
@@ -194,12 +283,26 @@ body {
 
 button {
   font: inherit;
-  padding: 0.45rem 1rem;
-  border: none;
+  font-weight: 500;
+  padding: 0.45rem 1.1rem;
+  border: 1px solid transparent;
   border-radius: 0.5rem;
   background: var(--accent);
   color: #fff;
   cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 button:disabled {
@@ -207,8 +310,28 @@ button:disabled {
   cursor: default;
 }
 
-.card + .card {
-  margin-top: 1rem;
+.button-secondary {
+  background: var(--card-bg);
+  border-color: var(--border);
+  color: var(--accent);
+}
+
+.button-secondary:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.button-small {
+  padding: 0.25rem 0.7rem;
+  font-size: 0.8125rem;
+}
+
+.button-danger {
+  background: var(--error-text);
+}
+
+.button-danger:hover:not(:disabled) {
+  background: var(--error-hover);
 }
 
 .table-scroll {
@@ -229,9 +352,19 @@ button:disabled {
 
 .users-table th,
 .users-table td {
-  padding: 0.5rem 0.4rem;
+  padding: 0.6rem 0.5rem;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+}
+
+.users-table th:first-child,
+.users-table td:first-child {
+  padding-left: 0;
+}
+
+.users-table th:last-child,
+.users-table td:last-child {
+  padding-right: 0;
 }
 
 .users-table tr:last-child td {
@@ -240,28 +373,22 @@ button:disabled {
 
 .users-table select {
   font: inherit;
-  padding: 0.2rem 0.3rem;
+  padding: 0.25rem 0.4rem;
+  color: var(--text);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: 0.4rem;
 }
 
 .row-actions {
-  display: grid;
-  gap: 0.3rem;
-}
-
-.button-small {
-  padding: 0.2rem 0.55rem;
-  font-size: 0.8125rem;
-}
-
-.button-danger {
-  background: var(--error-text);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .otp-box {
-  margin: 0 0 1rem;
-  padding: 0.75rem 1rem;
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
   border: 1px solid var(--ok-text);
   border-radius: 0.5rem;
   background: var(--ok-bg);
