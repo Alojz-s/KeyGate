@@ -120,7 +120,8 @@ body {
 }
 
 .login-form input,
-.login-form textarea {
+.login-form textarea,
+.login-form select {
   display: block;
   width: 100%;
   margin-top: 0.25rem;
@@ -193,4 +194,77 @@ button {
 button:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.card + .card {
+  margin-top: 1rem;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.users-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.users-table th,
+.users-table td {
+  padding: 0.5rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.users-table tr:last-child td {
+  border-bottom: none;
+}
+
+.users-table select {
+  font: inherit;
+  padding: 0.2rem 0.3rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+}
+
+.row-actions {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.button-small {
+  padding: 0.2rem 0.55rem;
+  font-size: 0.8125rem;
+}
+
+.button-danger {
+  background: var(--error-text);
+}
+
+.otp-box {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ok-text);
+  border-radius: 0.5rem;
+  background: var(--ok-bg);
+  font-size: 0.875rem;
+}
+
+.otp-box p {
+  margin: 0 0 0.5rem;
+}
+
+.otp-value {
+  display: block;
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+  user-select: all;
 }
