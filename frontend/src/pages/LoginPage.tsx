@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
+import Brand from '../components/Brand'
 
 export default function LoginPage() {
   const { user, loading, notice, login } = useAuth()
@@ -28,8 +29,7 @@ export default function LoginPage() {
 
   return (
     <main className="home">
-      <h1>KeyGate</h1>
-      <p className="subtitle">Firmowy portal z artykułami</p>
+      <Brand />
 
       <form className="card login-form" onSubmit={handleSubmit}>
         <h2>Logowanie</h2>

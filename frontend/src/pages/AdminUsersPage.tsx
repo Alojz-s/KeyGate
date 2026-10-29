@@ -110,7 +110,7 @@ export default function AdminUsersPage() {
               Skopiuj je teraz – nie zostanie pokazane ponownie. Jest ważne 24 godziny i działa
               jeden raz; po zalogowaniu użytkownik musi ustawić własne hasło.
             </p>
-            <button type="button" onClick={() => setIssued(null)}>
+            <button type="button" className="button-small" onClick={() => setIssued(null)}>
               Zamknij
             </button>
           </div>
@@ -161,7 +161,7 @@ export default function AdminUsersPage() {
                         <div className="row-actions">
                           <button
                             type="button"
-                            className="button-small"
+                            className="button-small button-secondary"
                             disabled={busy}
                             onClick={() => handleToggleBlock(user)}
                           >
@@ -169,7 +169,7 @@ export default function AdminUsersPage() {
                           </button>
                           <button
                             type="button"
-                            className="button-small"
+                            className="button-small button-secondary"
                             disabled={busy}
                             onClick={() => handleReset(user)}
                           >

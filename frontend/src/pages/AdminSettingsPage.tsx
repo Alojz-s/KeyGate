@@ -111,7 +111,7 @@ export default function AdminSettingsPage() {
       )}
       {saved && (
         <p className="notice" role="status">
-          Zapisano ustawienia. Obowiązują od razu, także w otwartych sesjach.
+          Zapisano ustawienia.
         </p>
       )}
       <button type="submit" disabled={!form || submitting}>
