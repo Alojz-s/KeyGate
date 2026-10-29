@@ -13,3 +13,7 @@ export function fetchArticles(): Promise<Article[]> {
 export function createArticle(title: string, content: string): Promise<Article> {
   return apiRequest<Article>('POST', '/articles', { title, content })
 }
+
+export function updateArticle(id: number, title: string, content: string): Promise<Article> {
+  return apiRequest<Article>('PUT', `/articles/${id}`, { title, content })
+}
